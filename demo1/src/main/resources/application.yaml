@@ -1,0 +1,32 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 4
+  cloud:
+    nacos:
+      serverAddr: 127.0.0.1:8849
+    loadbalancer:
+#      ribbon:
+#        enabled: false
+      nacos:
+        enabled: true
+  config:
+    import:
+      - nacos:demo1.yaml?refreshEnabled=true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    root: WARN
+    com.example: DEBUG

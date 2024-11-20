@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: gateway
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    hikari:
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      pool-name: gateway-hikariCP
+      initialization-fail-timeout: 5
+      validation-timeout: 3000
+      leak-detection-threshold: 0
+      max-pool-prepared-statement-per-connection-size: 20
+      max-open-prepared-statements: 20
+      connection-init-sql: SET NAMES utf8mb4;
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+      isolation-level: 4
+      read-only: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 8
+        min-idle: 4
+  cloud:
+    gateway:
+      discovery:
+        locators:
+          - lb://
+    nacos:
+      serverAddr: 127.0.0.1:8849
+    loadbalancer:
+#      ribbon:
+#        enabled: true
+      nacos:
+        enabled: true
+  config:
+    import:
+      - nacos:routes.json?refreshEnabled=true
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
+    org.springframework.http.server.reactive: debug
+    org.springframework.web.reactive: debug
+    com.example: debug
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    gateway:
+      enabled: true
+    health:
+      show-details: always

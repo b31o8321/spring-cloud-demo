@@ -1,0 +1,25 @@
+server:
+  port: 8090
+spring:
+  application:
+    name: demo1
+  cloud:
+    function:
+      definition: testConsumerChannel;
+    stream:
+      binders:
+        defaultRocketmq:
+          type: rocketmq
+          name-server: localhost:9876
+      bindings:
+        testConsumerChannel-in-0:
+          binder: defaultRocketmq
+          group: test-rocket-group
+          destination: test-rocket-topic
+          contentType: text/plain
+          consumer:
+            max-attempts: 1
+        testProducerChannel-out-0:
+          binder: defaultRocketmq
+          destination: test-rocket-topic
+          contentType: text/plain
