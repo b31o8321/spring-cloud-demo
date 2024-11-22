@@ -1,4 +1,4 @@
-package com.example.gateway.config;
+package com.example.gateway.route;
 
 import com.alibaba.cloud.nacos.NacosConfigManager;
 import com.alibaba.nacos.api.config.ConfigService;
@@ -7,6 +7,7 @@ import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayDeque;
 import java.util.List;
 
 public class NacosRouteLocator implements RouteDefinitionLocator {
@@ -22,6 +23,9 @@ public class NacosRouteLocator implements RouteDefinitionLocator {
 
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
+        ArrayDeque<String> arrayDeque = new ArrayDeque<>();
+
+
         ConfigService configService = nacosConfigManager.getConfigService();
         try {
             String config = configService.getConfig(dataId, group, 5000);

@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//DTD//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.demo.mapper.UserMapper">
+<mapper namespace="com.example.user.mapper.UserMapper">
+
+    <insert id="create" parameterType="com.example.user.model.dto.AuthDTO">
+        INSERT INTO users (id, username, password, nickname, email)
+        VALUES (#{id}, #{username}, #{password}, "", "")
+    </insert>
 
     <select id="findById" resultMap="userResultMap">
         SELECT * FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findByUsername" resultMap="authResultMap">
+        SELECT * FROM users WHERE username = #{username};
     </select>
 
     <resultMap id="userResultMap" type="com.example.user.model.dto.UserDTO">
@@ -11,5 +20,11 @@
         <result property="username" column="username" />
         <result property="email" column="email" />
         <result property="nickname" column="nickname" />
+    </resultMap>
+
+    <resultMap id="authResultMap" type="com.example.user.model.dto.AuthDTO">
+        <id property="id" column="id" />
+        <result property="username" column="username" />
+        <result property="password" column="password" />
     </resultMap>
 </mapper>

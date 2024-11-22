@@ -1,9 +1,9 @@
 spring:
   application:
-    name: user
+    name: user-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/demo?useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Shanghai
     username: root
     password: root
     hikari:
@@ -46,6 +46,8 @@ logging:
     org.springframework.http.server.reactive: debug
     org.springframework.web: trace
     org.springframework.security: trace
+    org.mybatis: debug
+    org.apace.ibatis: debug
     com.example: debug
 management:
   endpoints:
@@ -59,3 +61,6 @@ mybatis:
   mapper-locations: classpath*:mapper/*.xml
 server:
   port: 8010
+jwt:
+  secret: "b440c555857619a74a5f18fbf56129e237db93a23c3375a727f664479a6272c2"
+  expiration: 86400000 # 示例：设置JWT有效期为一天，单位毫秒

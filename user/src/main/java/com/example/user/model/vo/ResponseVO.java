@@ -10,6 +10,7 @@ public class ResponseVO<T> {
     private final String message;
     private final T data;
 
+
     public static <T> ResponseVO<T> success() {
         return new ResponseVO<>("200000", "success", null);
     }
@@ -20,7 +21,7 @@ public class ResponseVO<T> {
     public static <T> ResponseVO<T> error() {
         return new ResponseVO<>("400000", "fail", null);
     }
-    public static <T> ResponseVO<T> error(T data) {
-        return new ResponseVO<>("400000", "fail", data);
+    public static <T> ResponseVO<T> error(String msg) {
+        return new ResponseVO<>("400000", msg, null);
     }
 }

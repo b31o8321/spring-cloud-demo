@@ -1,4 +1,4 @@
-package com.example.gateway.config;
+package com.example.gateway.route;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +11,7 @@ import org.springframework.cloud.gateway.route.RouteDefinition;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class NacosConfigParse {
     public static List<RouteDefinition> parse(String config) {
@@ -23,21 +24,28 @@ public class NacosConfigParse {
                 routeDefinition.setId(routeConfig.getName());
                 routeDefinition.setUri(URI.create("lb://" + routeConfig.getServiceName()));
 
-                String pathPatten = "/api/" + routeConfig.getServiceName() + routeConfig.getPath().substring(4);
-                PredicateDefinition path = new PredicateDefinition("Path=" + pathPatten);
-                PredicateDefinition method = new PredicateDefinition("Method=" + routeConfig.getAlias().substring(routeConfig.getAlias().lastIndexOf(".") + 1).toUpperCase());
-                routeDefinition.setPredicates(List.of(path, method));
+                String predicationPath = routeConfig.getPath().replaceAll("\\{\\w+\\}", "*");
+                PredicateDefinition pathPredicateDefinition = new PredicateDefinition("Path=" + predicationPath);
 
-                FilterDefinition rewritePath = new FilterDefinition();
-                rewritePath.setName("RewritePath");
-                rewritePath.getArgs().put(RewritePathGatewayFilterFactory.REGEXP_KEY, pathPatten);
-                rewritePath.getArgs().put(RewritePathGatewayFilterFactory.REPLACEMENT_KEY, routeConfig.getPath());
-                routeDefinition.setFilters(List.of(rewritePath));
+                String method = routeConfig.getAlias().substring(routeConfig.getAlias().lastIndexOf(".") + 1).toUpperCase();
+                if ("LIST".equals(method)) {
+                    method = "GET";
+                }
+                PredicateDefinition methodPredicateDefinition = new PredicateDefinition("Method=" + method);
+
+                routeDefinition.setPredicates(List.of(pathPredicateDefinition, methodPredicateDefinition));
+
+                FilterDefinition rewritePathFilterDefinition = new FilterDefinition();
+                rewritePathFilterDefinition.setName("RewritePath");
+                Map<String, String> args = rewritePathFilterDefinition.getArgs();
+
+                String frontendPath = "/api/(?<path>.*)";
+                String backendPath = "/api/" + routeConfig.getServiceName() + "/${path}";
+                args.put(RewritePathGatewayFilterFactory.REGEXP_KEY, frontendPath);
+                args.put(RewritePathGatewayFilterFactory.REPLACEMENT_KEY, backendPath);
+                routeDefinition.setFilters(List.of(rewritePathFilterDefinition));
 
                 routeDefinitionList.add(routeDefinition);
-
-                ArrayList<Object> objects = new ArrayList<>();
-                objects.clear();
             }
 
             return routeDefinitionList;

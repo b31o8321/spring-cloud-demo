@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class UserApplication {
 
 	public static void main(String[] args) {
-		System.setProperty("jdk.xml.accessExternalDTD", "all");
 		SpringApplication.run(UserApplication.class, args);
 	}
 

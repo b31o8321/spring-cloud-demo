@@ -1,24 +1,94 @@
 package com.example.user.service;
 
-import com.example.user.mapper.AuthMapper;
+import cn.hutool.core.lang.Snowflake;
 import com.example.user.model.dto.AuthDTO;
+import com.example.user.model.dto.UserDTO;
+import com.example.user.model.vo.ValidateTokenVO;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.impl.DefaultClaims;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
-public class AuthService implements UserDetailsService {
-    @Autowired
-    private AuthMapper authMapper;
+import java.security.Key;
+import java.util.Date;
 
-    public AuthDTO findById(Long id) {
-        return authMapper.findById(id);
+@Service
+public class AuthService {
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private Snowflake snowflake;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
+
+    public Authentication authenticateUser(String username, String password) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(username, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return authMapper.findByUsername(username);
+    public String issuerJwt(Authentication authentication) {
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + jwtExpiration);
+        return Jwts.builder()
+                .setSubject(((UserDetails) authentication.getPrincipal()).getUsername())
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .compact();
+    }
+
+    public String validate(ValidateTokenVO validateTokenVO) {
+        JwtParser parser = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes())).build();
+
+        try {
+            Jwt jwt = parser.parse(validateTokenVO.getToken());
+            DefaultClaims claims = (DefaultClaims) jwt.getBody();
+
+            return buildJWT(claims.getSubject());
+        } catch (ExpiredJwtException e) {
+            // JWT已过期
+            throw e;
+        } catch (MalformedJwtException e) {
+            // JWT格式不正确
+            throw e;
+        } catch (UnsupportedJwtException e) {
+            // 不支持的JWT类型
+            throw e;
+        } catch (Exception e) {
+            // 其他未知错误
+            throw e;
+        }
+    }
+
+    public String login(AuthDTO authDTO) {
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authDTO.getUsername(), authDTO.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        return buildJWT(authDTO.getUsername());
+    }
+
+    public String buildJWT(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
     }
 }
