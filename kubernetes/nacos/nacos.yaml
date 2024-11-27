@@ -1,0 +1,70 @@
+# 定义Nacos服务资源
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-service
+  labels:
+    app: nacos
+  # 服务的元数据，用于标识和管理该服务，这里设置了服务名称和关联的应用标签
+spec:
+  type: ClusterIP
+  # 设置服务类型为ClusterIP，意味着该服务只能在Kubernetes集群内部被访问
+  ports:
+    - port: 8848
+      targetPort: 8848
+      # 将服务的8848端口映射到后端Nacos容器的8848端口，以便通过该服务访问Nacos的8848端口（Nacos的主要服务端口）
+  selector:
+    app: nacos
+    # 通过这个标签选择器来关联到后面要创建的Nacos Deployment中的Pod，确保服务能正确路由到对应的Pod
+
+---
+# 定义Nacos的Deployment资源，用于管理Nacos Pod的部署和副本数量等
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-deployment
+  labels:
+    app: nacos
+  # 设置Deployment的名称和关联的应用标签，用于标识和管理该Deployment资源
+spec:
+  replicas: 1
+  # 指定要创建的Nacos Pod副本数量，这里设置为1个，可根据实际需求调整
+  selector:
+    matchLabels:
+      app: nacos
+      # 通过这个标签选择器来选择要管理的Pod，确保和下面模板中定义的Pod标签一致
+  template:
+    metadata:
+      labels:
+        app: nacos
+      # 给Pod添加标签，用于和Deployment的标签选择器匹配以及其他资源的关联（如服务通过该标签找到对应的Pod）
+    spec:
+      containers:
+        - name: nacos-container
+          image: nacos/nacos-server:latest
+          ports:
+            - containerPort: 8848
+              name: client
+              # 暴露容器的8848端口，用于客户端访问Nacos服务，如配置获取、服务发现等功能
+            - containerPort: 9848
+              name: client-rpc
+              # 暴露容器的9848端口，用于客户端与Nacos之间的RPC通信，通常涉及到一些内部的服务调用和数据交互
+            - containerPort: 9849
+              name: raft-rpc
+              # 暴露容器的9849端口，用于Nacos集群内部基于raft协议的RPC通信，比如在集群模式下节点间的数据同步等操作
+          env:
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: "mysql"
+              # 设置Nacos连接的数据库平台为mysql，这里假设要将Nacos连接到MySQL数据库
+            - name: MYSQL_SERVICE_HOST 
+              value: "mysql"
+            - name: MYSQL_SERVICE_DB_NAME
+              value: "nacos"
+            - name: MYSQL_SERVICE_USER
+              value: "nacos"
+            - name: MYSQL_SERVICE_PASSWORD
+              value: "nacos"
+            - name: MYSQL_DATABASE_NUM
+              value: "1"
+            - name: MYSQL_SERVICE_DB_PARAM
+              value: "characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&allowPublicKeyRetrieval=true"

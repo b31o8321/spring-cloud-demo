@@ -23,6 +23,10 @@ public class UserService implements UserDetailsService {
     public void create(AuthDTO authDTO) {
         authDTO.setId(snowflake.nextId());
         authDTO.setPassword(passwordEncoder.encode(authDTO.getPassword()));
+        authDTO.setCreatedAt(System.currentTimeMillis());
+        authDTO.setUpdatedAt(System.currentTimeMillis());
+        authDTO.setDeletedAt(0L);
+
         userMapper.create(authDTO);
     }
 

@@ -12,6 +12,9 @@ public class AuthDTO implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private Long createdAt;
+    private Long updatedAt;
+    private Long deletedAt;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

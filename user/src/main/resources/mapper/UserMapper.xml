@@ -3,16 +3,16 @@
 <mapper namespace="com.example.user.mapper.UserMapper">
 
     <insert id="create" parameterType="com.example.user.model.dto.AuthDTO">
-        INSERT INTO users (id, username, password, nickname, email)
-        VALUES (#{id}, #{username}, #{password}, "", "")
+        INSERT INTO users (id, username, password, nickname, email, created_at, updated_at, deleted_at)
+        VALUES (#{id}, #{username}, #{password}, "", "", #{createdAt}, #{updatedAt}, #{deletedAt})
     </insert>
 
     <select id="findById" resultMap="userResultMap">
-        SELECT * FROM users WHERE id = #{id}
+        SELECT * FROM users WHERE id = #{id} AND deleted_at = 0
     </select>
 
     <select id="findByUsername" resultMap="authResultMap">
-        SELECT * FROM users WHERE username = #{username};
+        SELECT * FROM users WHERE username = #{username} AND deleted_at = 0;
     </select>
 
     <resultMap id="userResultMap" type="com.example.user.model.dto.UserDTO">

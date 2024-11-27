@@ -13,4 +13,7 @@ public class UserDTO {
     private String username;
     private String nickname;
     private String email;
+    private Long createdAt;
+    private Long updatedAt;
+    private Long deletedAt;
 }

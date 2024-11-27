@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sentinel-dashboard-service
+  labels:
+    app: sentinel-dashboard
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8858
+    name: client-port
+    targetPort: 8858
+  - port: 8719
+    name: api-port
+    targetPort: 8719
+  selector:
+    app: sentinel-dashboard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sentinel-dashboard-deployment
+  labels:
+    app: sentinel-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sentinel-dashboard
+  template:
+    metadata:
+      labels:
+        app: sentinel-dashboard
+    spec:
+      containers:
+      - name: sentinel-dashboard-container
+        image: bladex/sentinel-dashboard:latest
+        ports:
+        - containerPort: 8858
+          name: client-port
+        - containerPort: 8719
+          name: api-port

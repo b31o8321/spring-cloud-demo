@@ -82,6 +82,14 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.15.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -110,5 +118,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

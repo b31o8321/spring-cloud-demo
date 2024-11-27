@@ -1,5 +1,6 @@
 package com.example.gateway.filter;
 
+import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.example.gateway.WebClient.UserCenterWebClient;
 import com.example.gateway.vo.ResponseVO;
 import com.example.gateway.vo.ValidateTokenVO;
@@ -31,7 +32,7 @@ public class jwtFilter implements GlobalFilter, Ordered {
         String authHeader = headers.getFirst(HttpHeaders.AUTHORIZATION);
 
 
-        if (request.getURI().getPath().equals("/api/auth/login") && request.getMethod().equals(HttpMethod.POST)) {
+        if ((request.getURI().getPath().equals("/api/auth/login") || request.getURI().getPath().equals("/api/users")) && request.getMethod().equals(HttpMethod.POST)) {
             return chain.filter(exchange);
         }
 
