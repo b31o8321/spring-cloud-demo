@@ -53,6 +53,8 @@ spec:
               name: raft-rpc
               # 暴露容器的9849端口，用于Nacos集群内部基于raft协议的RPC通信，比如在集群模式下节点间的数据同步等操作
           env:
+            - name: MODE
+              value: "standalone"
             - name: SPRING_DATASOURCE_PLATFORM
               value: "mysql"
               # 设置Nacos连接的数据库平台为mysql，这里假设要将Nacos连接到MySQL数据库

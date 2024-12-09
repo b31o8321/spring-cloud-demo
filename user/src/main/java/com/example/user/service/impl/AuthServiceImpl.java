@@ -1,12 +1,13 @@
-package com.example.user.service;
+package com.example.user.service.impl;
 
 import cn.hutool.core.lang.Snowflake;
 import com.example.user.model.dto.AuthDTO;
-import com.example.user.model.dto.UserDTO;
-import com.example.user.model.vo.ValidateTokenVO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.security.Keys;
+import org.apache.dubbo.config.annotation.DubboService;
+import org.example.user.AuthService;
+import org.example.user.ValidateTokenVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +18,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
 import java.util.Date;
 
-@Service
-public class AuthService {
+@DubboService
+public class AuthServiceImpl implements AuthService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired

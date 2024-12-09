@@ -25,7 +25,7 @@ spring:
       read-only: false
   redis:
     host: 127.0.0.1
-    port: 6379
+    port: 36379
     database: 0
     lettuce:
       pool:
@@ -64,3 +64,11 @@ server:
 jwt:
   secret: "b440c555857619a74a5f18fbf56129e237db93a23c3375a727f664479a6272c2"
   expiration: 86400000 # 示例：设置JWT有效期为一天，单位毫秒
+dubbo:
+  application:
+    name: user-center-dubbo
+  registry:
+    address: nacos://127.0.0.1:38848
+    protocol: nacos
+  protocol:
+    host: 192.168.31.169

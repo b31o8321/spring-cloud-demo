@@ -1,17 +1,15 @@
 package com.example.user.controller;
 
 import com.example.user.model.dto.AuthDTO;
-import com.example.user.model.dto.UserDTO;
 import com.example.user.model.vo.ResponseVO;
-import com.example.user.model.vo.ValidateTokenVO;
-import com.example.user.service.AuthService;
+import com.example.user.service.impl.AuthServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.example.user.ValidateTokenVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +24,11 @@ import java.util.Date;
 @RequestMapping("/api/user-center/auth")
 public class AuthController {
     @Autowired
-    private AuthService authService;
+    private AuthServiceImpl authServiceImpl;
 
     @PostMapping("/login")
     public ResponseEntity<ResponseVO<Object>> login(@RequestBody AuthDTO authDTO, HttpServletResponse response) {
-        String jwt = authService.login(authDTO);
+        String jwt = authServiceImpl.login(authDTO);
 
         if (StringUtils.isEmpty(jwt)) {
             return new ResponseEntity<>(ResponseVO.error("login failed!"), HttpStatus.UNAUTHORIZED);
@@ -41,7 +39,7 @@ public class AuthController {
 
     @PostMapping("/validate")
     public ResponseEntity<ResponseVO<String>> validate(@RequestBody ValidateTokenVO validateTokenVO) {
-        String newToken = authService.validate(validateTokenVO);
+        String newToken = authServiceImpl.validate(validateTokenVO);
 
         if (StringUtils.isEmpty(newToken)) {
             return new ResponseEntity<>(ResponseVO.error("token invalid!"), HttpStatus.UNAUTHORIZED);

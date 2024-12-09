@@ -39,14 +39,14 @@ spring:
         response-body: '{"code": 500000, "data": null, "msg": "已限流，请稍后再试"}'
         mode: response
         response-status: 500
-      datasource:
-        flow-control:
-          nacos:
-            server-addr: 127.0.0.1:38848
-            data-id: gateway-flow-rules
-            data-type: json
-            group-id: DEFAULT_GROUP
-            rule-type: gw_flow
+#      datasource:
+#        flow-control:
+#          nacos:
+#            server-addr: 127.0.0.1:38848
+#            data-id: gateway-flow-rules
+#            data-type: json
+#            group-id: DEFAULT_GROUP
+#            rule-type: gw_flow
     gateway:
       discovery:
         locators:
@@ -84,3 +84,12 @@ scp:
       port: 38719
     dashboard:
       server: localhost:38858
+dubbo:
+  application:
+    name: gateway-dubbo
+  registry:
+    address: nacos://127.0.0.1:38848
+    protocol: nacos
+    parameters.register-consumer-url: true
+  protocol:
+    host: 192.168.31.169

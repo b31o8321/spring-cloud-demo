@@ -1,6 +1,6 @@
-package com.example.gateway.WebClient;
+package com.example.gateway.webclient;
 
-import com.example.gateway.vo.ValidateTokenVO;
+import org.example.user.ValidateTokenVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.reactive.LoadBalancedExchangeFilterFunction;
 import org.springframework.http.MediaType;
