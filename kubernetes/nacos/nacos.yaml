@@ -11,8 +11,12 @@ spec:
   # 设置服务类型为ClusterIP，意味着该服务只能在Kubernetes集群内部被访问
   ports:
     - port: 8848
+      name: client
       targetPort: 8848
       # 将服务的8848端口映射到后端Nacos容器的8848端口，以便通过该服务访问Nacos的8848端口（Nacos的主要服务端口）
+    - port: 9848
+      name: client-rpc
+      targetPort: 9848
   selector:
     app: nacos
     # 通过这个标签选择器来关联到后面要创建的Nacos Deployment中的Pod，确保服务能正确路由到对应的Pod

@@ -3,6 +3,7 @@ package com.demo.common.service.user.controller;
 import com.demo.common.service.user.model.dto.AuthDTO;
 import com.demo.common.service.user.model.vo.ResponseVO;
 import com.demo.common.service.user.service.impl.AuthServiceImpl;
+import com.demo.internal.service.user.ValidateTokenVO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.ServletWebRequest;
 
 import java.util.Date;
 
@@ -37,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<ResponseVO<String>> validate(@RequestBody com.demo.internal.service.user.ValidateTokenVO validateTokenVO) {
+    public ResponseEntity<ResponseVO<String>> validate(@RequestBody ValidateTokenVO validateTokenVO, ServletWebRequest request) {
         String newToken = authServiceImpl.validate(validateTokenVO);
 
         if (StringUtils.isEmpty(newToken)) {

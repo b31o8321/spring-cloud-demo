@@ -1,11 +1,11 @@
 package com.demo.common.service.gateway.filter;
 
 import com.demo.common.service.gateway.webclient.UserCenterWebClient;
+import com.demo.internal.service.user.AuthService;
+import com.demo.internal.service.user.ValidateTokenVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.http.HttpHeaders;
-import org.example.user.AuthService;
-import org.example.user.ValidateTokenVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -43,9 +43,8 @@ public class jwtFilter implements GlobalFilter, Ordered {
         }
 
         String token = authHeader.substring(7);
-
         String validate = authService.validate(new ValidateTokenVO(request.getURI().getPath(), token));
-        return chain.filter(exchange);
+        // TODO validate handle
 //        WebClient.ResponseSpec responseSpec = userCenterWebClient.validateToken(new ValidateTokenVO(request.getURI().getPath(), token));
 //        return responseSpec .bodyToMono(ResponseVO.class)
 //                .flatMap(responseVO -> {
@@ -63,6 +62,7 @@ public class jwtFilter implements GlobalFilter, Ordered {
 //                        return chain.filter(newExchange);
 //                    }
 //                });
+        return chain.filter(exchange);
     }
 
     @Override

@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: ai
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:33306/demo?useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    hikari:
+      connection-test-query: SELECT 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      pool-name: gateway-hikariCP
+      initialization-fail-timeout: 5
+      validation-timeout: 3000
+      leak-detection-threshold: 0
+      max-pool-prepared-statement-per-connection-size: 20
+      max-open-prepared-statements: 20
+      connection-init-sql: SET NAMES utf8mb4;
+      transaction-isolation: TRANSACTION_READ_COMMITTED
+      isolation-level: 4
+      read-only: false
+  ai:
+    ollama:
+      base-url: http://127.0.0.1:11434
+      chat:
+        options:
+          model: llama3
+  cloud:
+    nacos:
+      serverAddr: 127.0.0.1:38848
+      config:
+        import-check:
+          enabled: false
+    loadbalancer:
+      nacos:
+        enabled: true

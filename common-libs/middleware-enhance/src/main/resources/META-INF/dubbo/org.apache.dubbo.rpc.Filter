@@ -1,0 +1,2 @@
+IdempotentTokenFilter=com.demo.middleware.dubbo.idempotent.filter.IdempotentTokenFilter
+IdempotentTokenCheckFilter=com.demo.middleware.dubbo.idempotent.filter.IdempotentTokenCheckFilter
