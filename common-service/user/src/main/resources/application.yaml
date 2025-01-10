@@ -71,6 +71,7 @@ dubbo:
     address: nacos://127.0.0.1:38848
     protocol: nacos
   protocol:
+    name: tri
     host: 192.168.31.169
   provider:
     filter: IdempotentTokenCheckFilter

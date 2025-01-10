@@ -92,6 +92,7 @@ dubbo:
     protocol: nacos
     parameters.register-consumer-url: true
   protocol:
+    name: tri
     host: 192.168.31.169
   consumer:
     filter: IdempotentTokenFilter

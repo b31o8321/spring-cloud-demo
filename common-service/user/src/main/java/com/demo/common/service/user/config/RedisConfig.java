@@ -18,6 +18,9 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 @Configuration
 public class RedisConfig {
     @Value("${spring.redis.host}")
@@ -39,6 +42,9 @@ public class RedisConfig {
         template.setKeySerializer(RedisSerializer.string());
         template.setValueSerializer(RedisSerializer.json());
         template.afterPropertiesSet();
+
+        HashMap map = new HashMap(5);
+
 
         return template;
     }
